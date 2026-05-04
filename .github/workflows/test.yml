@@ -1,0 +1,35 @@
+name: test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shell: [bash, zsh]
+    name: test (${{ matrix.shell }})
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get install -y tmux jq zsh
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code@^2
+
+      - name: Install Codex CLI
+        run: npm install -g @openai/codex
+
+      - name: Run tests
+        run: bash test/run-tests.sh
+        env:
+          TEST_SHELL: ${{ matrix.shell }}

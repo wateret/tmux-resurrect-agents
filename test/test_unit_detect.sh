@@ -1,0 +1,15 @@
+
+echo "=== detect_tool() ==="
+
+assert_eq "detect bare 'claude'" "claude" "$(detect_tool "claude")"
+assert_eq "detect 'claude --resume ses_123'" "claude" "$(detect_tool "claude --resume ses_123")"
+assert_eq "detect '/usr/local/bin/claude'" "claude" "$(detect_tool "/usr/local/bin/claude")"
+assert_eq "detect '/usr/local/bin/claude --model opus'" "claude" "$(detect_tool "/usr/local/bin/claude --model opus")"
+assert_eq "detect bare 'codex'" "codex" "$(detect_tool "codex")"
+assert_eq "detect 'codex resume abc-123'" "codex" "$(detect_tool "codex resume abc-123")"
+assert_eq "detect '/usr/local/bin/codex'" "codex" "$(detect_tool "/usr/local/bin/codex")"
+assert_eq "detect '/usr/local/bin/codex --model o3 resume abc'" "codex" "$(detect_tool "/usr/local/bin/codex --model o3 resume abc")"
+assert_eq "ignore 'bash'" "" "$(detect_tool "bash")"
+assert_eq "ignore 'vim'" "" "$(detect_tool "vim")"
+assert_eq "ignore 'claudette'" "" "$(detect_tool "claudette")"
+assert_eq "ignore 'node server.js'" "" "$(detect_tool "node server.js")"
