@@ -41,6 +41,10 @@ save:
 restore:
     @bash '{{plugin_dir}}/scripts/restore.sh'
 
+# Restart all agent processes (save -> kill -> restore) - useful to pick up config changes
+restart:
+    @bash '{{plugin_dir}}/scripts/restart.sh'
+
 # Run tests in Docker (optional filter: just test restore)
 test filter='':
     docker build -t tmux-resurrect-agents-test -f '{{plugin_dir}}/test/Dockerfile' '{{plugin_dir}}'
