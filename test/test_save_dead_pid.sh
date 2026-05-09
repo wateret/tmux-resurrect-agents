@@ -2,7 +2,7 @@
 echo "=== stale session file with dead PID ==="
 
 cat >"$MOCK_SESSIONS_DIR/99999.json" <<'EOF'
-{"pid":99999,"sessionId":"ses_dead","cwd":"/tmp","kind":"interactive","status":"idle"}
+{"pid":99999,"sessionId":"ses_dead","cwd":"/tmp","kind":"interactive","entrypoint":"cli","status":"idle"}
 EOF
 
 rm -f "$TEST_DATA_DIR/agent-sessions.json"

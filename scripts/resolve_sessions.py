@@ -12,16 +12,18 @@ import glob, json, os, re, sqlite3, subprocess, sys, time
 # --- Claude ---
 
 def get_claude_session(pid, args, claude_sessions_dir):
+    # Only match user-launched CLI sessions (entrypoint=="cli", kind=="interactive").
+    # Subagents use entrypoint "sdk-cli" and are excluded.
     session_file = os.path.join(claude_sessions_dir, f"{pid}.json")
     if os.path.isfile(session_file):
         try:
             with open(session_file) as f:
                 data = json.load(f)
-            if data.get("kind") == "interactive":
+            if data.get("entrypoint") == "cli" and data.get("kind") == "interactive":
                 sid = data.get("sessionId", "")
                 if sid:
                     return sid, data.get("cwd", "")
-            elif data.get("kind"):
+            elif data.get("entrypoint") or data.get("kind"):
                 return None, None
         except Exception:
             pass

@@ -15,7 +15,7 @@ claude_pid=$(get_pane_agent_pid claude test-claude 15) || {
 
 if [ -n "$claude_pid" ]; then
 	cat >"$MOCK_SESSIONS_DIR/${claude_pid}.json" <<SEOF
-{"pid":${claude_pid},"sessionId":"ses_detect_test","cwd":"/tmp/test-project","kind":"interactive","status":"idle"}
+{"pid":${claude_pid},"sessionId":"ses_detect_test","cwd":"/tmp/test-project","kind":"interactive","entrypoint":"cli","status":"idle"}
 SEOF
 fi
 

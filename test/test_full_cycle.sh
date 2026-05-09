@@ -27,7 +27,7 @@ cycle_codex_pid=$(get_pane_agent_pid codex "$cycle_codex_pane" 15) || true
 
 if [ -n "$cycle_claude_pid" ]; then
 	cat >"$MOCK_SESSIONS_DIR/${cycle_claude_pid}.json" <<CEOF
-{"pid":${cycle_claude_pid},"sessionId":"ses_full_cycle","cwd":"/tmp/cycle-project","kind":"interactive","status":"idle"}
+{"pid":${cycle_claude_pid},"sessionId":"ses_full_cycle","cwd":"/tmp/cycle-project","kind":"interactive","entrypoint":"cli","status":"idle"}
 CEOF
 fi
 
