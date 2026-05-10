@@ -44,6 +44,14 @@ Hooks into tmux-resurrect's `post-save-all` and `post-restore-all` events:
 1. **Save** — walks the process tree under each tmux pane, finds running agent processes, resolves session IDs from existing runtime state (session files, SQLite DBs, process args). Writes a sidecar JSON alongside resurrect's save files.
 2. **Restore** — reads the sidecar JSON and sends the appropriate resume command (`claude --resume` / `codex resume`) into the correct panes.
 
+## Restarting agents (without restarting tmux sessions)
+
+Saves sessions, kills the agent processes, and resumes them in-place — without restarting tmux sessions. Convenient for applying CLI app updates or `CLAUDE.md` / config changes.
+
+```bash
+~/.tmux/plugins/tmux-resurrect-agents/scripts/restart.sh
+```
+
 ## Disclaimer
 
 Session detection relies on undocumented internal state of Claude Code and
@@ -59,6 +67,7 @@ just uninstall  # remove hooks
 just status     # show hook status and saved sessions
 just save       # run save manually
 just restore    # run restore manually
+just restart    # save → kill → restore (picks up config changes)
 just test       # run full test suite
 just test unit  # run only tests matching "unit"
 ```
