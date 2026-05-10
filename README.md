@@ -59,6 +59,11 @@ Codex CLI. These formats may change without notice, which can cause detection
 to fail or produce incorrect session mappings — panes may be skipped or
 restored with the wrong session.
 
+Restored sessions may not be 100% identical to the original. Only a subset
+of CLI flags are replayed on resume; others (e.g. `--model`, `--worktree`)
+are intentionally dropped. The conversation history is preserved, but
+session-level options not in the allowlist will revert to defaults.
+
 ## Dev tasks (requires [just](https://github.com/casey/just))
 
 ```bash
