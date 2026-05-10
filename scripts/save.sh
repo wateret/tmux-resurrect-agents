@@ -22,7 +22,32 @@ if [ -f "$LOG_FILE" ]; then
 	tail -n 500 "$LOG_FILE" >"${LOG_FILE}.tmp" 2>/dev/null && mv "${LOG_FILE}.tmp" "$LOG_FILE" || true
 fi
 
-# Extract CLI args, stripping binary name/path and tool-specific session args.
+# Allowlist helpers for Claude flags that should be preserved on resume.
+_claude_bool_flag() {
+	case "$1" in
+	--dangerously-skip-permissions | --allow-dangerously-skip-permissions | \
+	--strict-mcp-config | --bare | --brief | --disable-slash-commands) return 0 ;;
+	*) return 1 ;;
+	esac
+}
+_claude_one_flag() {
+	case "$1" in
+	--permission-mode | --system-prompt | --append-system-prompt | \
+	--settings | --setting-sources | --agent | --agents) return 0 ;;
+	*) return 1 ;;
+	esac
+}
+_claude_multi_flag() {
+	case "$1" in
+	--allowedTools | --allowed-tools | --disallowedTools | --disallowed-tools | \
+	--tools | --add-dir | --mcp-config | --plugin-dir | --plugin-url | --betas) return 0 ;;
+	*) return 1 ;;
+	esac
+}
+
+# Extract CLI args: strips the binary name/path, then keeps only flags that
+# meaningfully affect an interactive resumed session (allowlist). One-time flags
+# (--resume, --continue, --worktree, --model, -p, etc.) are dropped silently.
 extract_cli_args() {
 	local raw_args="$1"
 	local tool="${2:-}"
@@ -42,18 +67,44 @@ extract_cli_args() {
 		;;
 	esac
 
-	# Strip tool-specific session/resume args
 	case "$tool" in
 	codex)
 		args=$(echo "$args" | sed -E 's/resume  *[^ ]*//')
+		echo "$args" | sed -E 's/  +/ /g; s/^ //; s/ $//'
 		;;
 	*)
-		args=$(echo "$args" | sed -E 's/--resume[= ] *[^ ]*//; s/(^| )-c( |$)/ /')
+		local result=""
+		set -f
+		read -ra tokens <<< "$args"
+		set +f
+		local i=0 n=${#tokens[@]}
+		while [ $i -lt $n ]; do
+			local tok="${tokens[$i]}"
+			if _claude_bool_flag "$tok"; then
+				result="$result $tok"
+				i=$((i + 1))
+			elif _claude_one_flag "$tok"; then
+				local j=$((i + 1))
+				if [ $j -lt $n ]; then
+					result="$result $tok ${tokens[$j]}"
+					i=$((j + 1))
+				else
+					i=$((i + 1))
+				fi
+			elif _claude_multi_flag "$tok"; then
+				result="$result $tok"
+				i=$((i + 1))
+				while [ $i -lt $n ] && [[ "${tokens[$i]}" != -* ]]; do
+					result="$result ${tokens[$i]}"
+					i=$((i + 1))
+				done
+			else
+				i=$((i + 1))
+			fi
+		done
+		echo "$result" | sed -E 's/  +/ /g; s/^ //; s/ $//'
 		;;
 	esac
-
-	# Normalize whitespace
-	echo "$args" | sed -E 's/  +/ /g; s/^ //; s/ $//'
 }
 
 # --- Main ---
