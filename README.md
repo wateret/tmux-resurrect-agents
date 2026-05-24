@@ -9,9 +9,11 @@ Does not modify your agent configuration - detection is read-only, based on exis
 - Claude Code
 - Codex
 
-## Install (TPM)
+## Install
 
-Add to `~/.tmux.conf`:
+**Via [TPM](https://github.com/tmux-plugins/tpm):**
+
+Add to `tmux.conf`:
 
 ```tmux
 set -g @plugin 'wateret/tmux-resurrect-agents'
@@ -19,16 +21,16 @@ set -g @plugin 'wateret/tmux-resurrect-agents'
 
 Then press `prefix + I` to install.
 
-## Install (manual)
+**Manual:**
 
 ```bash
-git clone https://github.com/wateret/tmux-resurrect-agents ~/.tmux/plugins/tmux-resurrect-agents
+git clone https://github.com/wateret/tmux-resurrect-agents ~/.config/tmux/plugins/tmux-resurrect-agents
 ```
 
-Add to `~/.tmux.conf`:
+Add to `tmux.conf`:
 
 ```tmux
-run-shell ~/.tmux/plugins/tmux-resurrect-agents/tmux-resurrect-agents.tmux
+run-shell ~/.config/tmux/plugins/tmux-resurrect-agents/tmux-resurrect-agents.tmux
 ```
 
 ## Requirements
@@ -49,7 +51,7 @@ Hooks into tmux-resurrect's `post-save-all` and `post-restore-all` events:
 Saves sessions, kills the agent processes, and resumes them in-place — without restarting tmux sessions. Convenient for applying CLI app updates or `CLAUDE.md` / config changes.
 
 ```bash
-~/.tmux/plugins/tmux-resurrect-agents/scripts/restart.sh
+~/.config/tmux/plugins/tmux-resurrect-agents/scripts/restart.sh
 ```
 
 ## Disclaimer
