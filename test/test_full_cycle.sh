@@ -110,7 +110,14 @@ echo "=== worktree session: restore strips -w flag ==="
 
 # 1. Create pane and start claude with -w (simulates a session launched inside a worktree)
 worktree_cwd="/tmp/worktree-test-project"
+
+# claude -w runs "git worktree add" and exits immediately if there is no git repo.
+# Init one so the worktree creation succeeds and claude stays running.
+rm -rf "$worktree_cwd"
 mkdir -p "$worktree_cwd"
+git -C "$worktree_cwd" init -q
+git -C "$worktree_cwd" -c user.email="test@test.com" -c user.name="Test" \
+	commit --allow-empty -q -m "init"
 
 tmux new-session -d -s test-worktree -c "$worktree_cwd" -x 200 -y 50
 sleep 0.5
@@ -191,6 +198,7 @@ else
 fi
 
 kill_pane_children test-worktree true
+rm -rf "$worktree_cwd"
 
 # Restore tmux server state for subsequent tests
 tmux new-session -d -s _init -x 200 -y 50
