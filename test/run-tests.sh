@@ -4,8 +4,8 @@
 #   filter: substring match on test filename (e.g. "unit", "restore", "full_cycle")
 set -euo pipefail
 
-if [ ! -f /.dockerenv ]; then
-    echo "ERROR: tests must run inside Docker. Use: just test" >&2
+if [ ! -f /.dockerenv ] && [ -z "${CI:-}" ]; then
+    echo "ERROR: tests must run inside Docker (/.dockerenv) or CI (CI=true). Use: just test" >&2
     exit 1
 fi
 
