@@ -29,6 +29,9 @@ jobs:
       - name: Install Codex CLI
         run: npm install -g @openai/codex
 
+      - name: Set up zsh PATH
+        run: echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.zshrc
+
       - name: Run tests
         run: bash test/run-tests.sh
         env:
