@@ -11,6 +11,8 @@ Does not modify your agent configuration - detection is read-only, based on exis
 
 ## Install
 
+Prerequisite: [tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect) & [tmux-continuum](https://github.com/tmux-plugins/tmux-continuum) (optional but higly recommended)
+
 **Via [TPM](https://github.com/tmux-plugins/tpm):**
 
 Add to `tmux.conf`:
