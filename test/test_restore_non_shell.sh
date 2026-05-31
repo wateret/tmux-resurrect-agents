@@ -11,7 +11,8 @@ test_pane=$(tmux list-panes -t test-noshell -F "#{session_name}:#{window_index}.
 tmux send-keys -t test-noshell "sleep 9999" Enter
 sleep 1
 
-cat >"$TEST_DATA_DIR/agent-sessions.json" <<NOSHELL
+SIDECAR=$(setup_resurrect_save)
+cat >"$SIDECAR" <<NOSHELL
 {
   "timestamp": "2026-01-01T00:00:00Z",
   "sessions": [

@@ -11,7 +11,8 @@ test_pane=$(tmux list-panes -t test-existing -F "#{session_name}:#{window_index}
 tmux send-keys -t test-existing "claude --resume ses_existing &" Enter
 sleep 2
 
-cat >"$TEST_DATA_DIR/agent-sessions.json" <<EXISTING
+SIDECAR=$(setup_resurrect_save)
+cat >"$SIDECAR" <<EXISTING
 {
   "timestamp": "2026-01-01T00:00:00Z",
   "sessions": [

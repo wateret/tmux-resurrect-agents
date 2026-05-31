@@ -69,6 +69,18 @@ run_restore() {
 	"$SCRIPT_RUNNER" "$REPO_DIR/scripts/restore.sh" "$@"
 }
 
+# Create a fake resurrect save file, point "last" at it, and echo the paired
+# agent sidecar path (tmux_resurrect_<ts>.agents.json). This mirrors how save.sh
+# and restore.sh resolve the sidecar from resurrect's "last" symlink in real use.
+# Pass an explicit timestamp to create a specific (e.g. older) snapshot.
+setup_resurrect_save() {
+	local ts="${1:-$(date +%Y%m%dT%H%M%S)_$RANDOM}"
+	local txt="tmux_resurrect_${ts}.txt"
+	: >"$TEST_DATA_DIR/$txt"
+	ln -sf "$txt" "$TEST_DATA_DIR/last"
+	echo "$TEST_DATA_DIR/tmux_resurrect_${ts}.agents.json"
+}
+
 # --- tmux helpers ---
 
 wait_for_child() {

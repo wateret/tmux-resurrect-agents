@@ -8,7 +8,8 @@ fi
 
 test_pane=$(tmux list-panes -t test-restore-codex -F "#{session_name}:#{window_index}.#{pane_index}" | head -1)
 
-cat >"$TEST_DATA_DIR/agent-sessions.json" <<REOF
+SIDECAR=$(setup_resurrect_save)
+cat >"$SIDECAR" <<REOF
 {
   "timestamp": "2026-01-01T00:00:00Z",
   "sessions": [

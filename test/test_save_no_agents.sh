@@ -4,11 +4,10 @@ echo "=== save with no agents running ==="
 tmux new-session -d -s test-empty -c /tmp
 sleep 1
 
-rm -f "$TEST_DATA_DIR/agent-sessions.json"
+SAVED=$(setup_resurrect_save)
 run_save 2>&1
 
-SAVED="$TEST_DATA_DIR/agent-sessions.json"
-assert_file_exists "agent-sessions.json created" "$SAVED"
+assert_file_exists "sidecar created" "$SAVED"
 empty_count=$(jq '.sessions | length' "$SAVED")
 assert_eq "no agents → empty sessions" "0" "$empty_count"
 

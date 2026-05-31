@@ -19,7 +19,7 @@ fi
 log "restart: saving current agent sessions..."
 bash "$SCRIPT_DIR/save.sh"
 
-INPUT_FILE="${DATA_DIR}/agent-sessions.json"
+INPUT_FILE="$(agent_sessions_file)"
 cp "$INPUT_FILE" "${INPUT_FILE}.bak" 2>/dev/null || true
 
 if [ ! -f "$INPUT_FILE" ]; then

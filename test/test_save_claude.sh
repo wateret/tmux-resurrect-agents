@@ -19,10 +19,9 @@ if [ -n "$claude_pid" ]; then
 SEOF
 fi
 
-rm -f "$TEST_DATA_DIR/agent-sessions.json"
+SAVED=$(setup_resurrect_save)
 run_save 2>&1
 
-SAVED="$TEST_DATA_DIR/agent-sessions.json"
 detect_count=$(jq '.sessions | length' "$SAVED")
 if [ "$detect_count" -ge 1 ]; then
 	pass "Detected at least 1 claude session"

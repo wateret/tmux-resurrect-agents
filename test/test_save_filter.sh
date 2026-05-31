@@ -19,10 +19,9 @@ if [ -n "$task_claude_pid" ]; then
 TEOF
 fi
 
-rm -f "$TEST_DATA_DIR/agent-sessions.json"
+SAVED=$(setup_resurrect_save)
 run_save 2>&1
 
-SAVED="$TEST_DATA_DIR/agent-sessions.json"
 task_count=$(jq '[.sessions[] | select(.pane | contains("test-task"))] | length' "$SAVED")
 assert_eq "Non-interactive session filtered out" "0" "$task_count"
 

@@ -8,7 +8,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
-INPUT_FILE="${DATA_DIR}/agent-sessions.json"
+INPUT_FILE="$(agent_sessions_file)"
 LOG_FILE="${DATA_DIR}/agent-restore.log"
 
 if [ -f "$LOG_FILE" ]; then

@@ -13,7 +13,7 @@ source "$SCRIPT_DIR/lib.sh"
 
 CLAUDE_SESSIONS_DIR="${CLAUDE_SESSIONS_DIR:-${HOME}/.claude/sessions}"
 CODEX_HOME="${CODEX_HOME:-${HOME}/.codex}"
-OUTPUT_FILE="${DATA_DIR}/agent-sessions.json"
+OUTPUT_FILE="$(agent_sessions_file)"
 LOG_FILE="${DATA_DIR}/agent-save.log"
 
 mkdir -p "$DATA_DIR"
@@ -251,6 +251,14 @@ main() {
 	fi
 
 	log "saved $count of $detected agent session(s) ($failed failed) to $OUTPUT_FILE"
+
+	# Prune sidecars whose paired resurrect save has been removed (resurrect
+	# rotates out old tmux_resurrect_*.txt files; keep sidecars in lockstep).
+	local sidecar
+	for sidecar in "${DATA_DIR}"/tmux_resurrect_*.agents.json; do
+		[ -e "$sidecar" ] || continue
+		[ -e "${sidecar%.agents.json}.txt" ] || { rm -f "$sidecar"; log "pruned orphan sidecar $sidecar"; }
+	done
 }
 
 # Allow sourcing without executing main (for tests)

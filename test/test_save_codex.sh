@@ -14,10 +14,9 @@ codex_pid=$(get_pane_agent_pid codex test-codex 15) || {
 }
 
 if [ -n "$codex_pid" ]; then
-	rm -f "$TEST_DATA_DIR/agent-sessions.json"
+	SAVED=$(setup_resurrect_save)
 	run_save 2>&1
 
-	SAVED="$TEST_DATA_DIR/agent-sessions.json"
 	codex_count=$(jq '[.sessions[] | select(.pane | contains("test-codex"))] | length' "$SAVED")
 	if [ "$codex_count" -ge 1 ]; then
 		pass "Detected codex session in pane"

@@ -32,10 +32,9 @@ CEOF
 fi
 
 # 2. Save both sessions
-rm -f "$TEST_DATA_DIR/agent-sessions.json"
+SAVED=$(setup_resurrect_save)
 run_save 2>&1
 
-SAVED="$TEST_DATA_DIR/agent-sessions.json"
 cycle_claude_saved=$(jq '[.sessions[] | select(.session_id == "ses_full_cycle")] | length' "$SAVED")
 cycle_codex_saved=$(jq '[.sessions[] | select(.session_id == "019dc39b-full-cycle-codex")] | length' "$SAVED")
 
@@ -140,17 +139,17 @@ WTEOF
 fi
 
 # 3. Save — verify session captured and -w stripped from cli_args
-rm -f "$TEST_DATA_DIR/agent-sessions.json"
+SAVED=$(setup_resurrect_save)
 run_save 2>&1
 
-wt_saved=$(jq '[.sessions[] | select(.session_id == "ses_wt_cycle")] | length' "$TEST_DATA_DIR/agent-sessions.json")
+wt_saved=$(jq '[.sessions[] | select(.session_id == "ses_wt_cycle")] | length' "$SAVED")
 if [ "$wt_saved" -ge 1 ]; then
 	pass "Worktree: save captured session"
 else
 	fail "Worktree: save did not capture session"
 fi
 
-wt_cli_args=$(jq -r '[.sessions[] | select(.session_id == "ses_wt_cycle")] | .[0].cli_args // ""' "$TEST_DATA_DIR/agent-sessions.json")
+wt_cli_args=$(jq -r '[.sessions[] | select(.session_id == "ses_wt_cycle")] | .[0].cli_args // ""' "$SAVED")
 if echo "$wt_cli_args" | grep -qE '(^| )(-w|--worktree)( |$)'; then
 	fail "Worktree: -w/--worktree was not stripped from saved cli_args (got: '$wt_cli_args')"
 else

@@ -18,6 +18,23 @@ else
 	DATA_DIR="$_dir2"
 fi
 
+# --- Agent sidecar path ---
+
+# Path of the agent-sessions sidecar paired with resurrect's current "last"
+# save, e.g. tmux_resurrect_<ts>.agents.json next to tmux_resurrect_<ts>.txt.
+# resurrect updates the "last" symlink just before its post-save-all hook, so
+# reading it here yields the timestamp of the save we are annotating.
+# Falls back to the legacy single-file name when no timestamped save exists.
+agent_sessions_file() {
+	local target
+	target="$(readlink "${DATA_DIR}/last" 2>/dev/null || true)"
+	if [ -n "$target" ]; then
+		echo "${DATA_DIR}/${target%.txt}.agents.json"
+	else
+		echo "${DATA_DIR}/agent-sessions.json"
+	fi
+}
+
 # --- Logging ---
 
 # Epoch millis at script start (used for elapsed time in log messages)
